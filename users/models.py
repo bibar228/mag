@@ -3,36 +3,31 @@ from django.core.validators import RegexValidator
 # Create your models here.
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-
-# Создаем класс менеджера пользователей
 class MyUserManager(BaseUserManager):
-    # Создаём метод для создания пользователя
-    def _create_user(self, email, password, **extra_fields):
-        # Проверяем есть ли Email
+    def _create_user(self, email, login, password, phone):
         if not email:
-            # Выводим сообщение в консоль
             raise ValueError("Вы не ввели Email")
-        # Проверяем есть ли логин
 
-        # Делаем пользователя
-        user = self.model(
-            email=self.normalize_email(email),
-            **extra_fields,
-        )
-        # Сохраняем пароль
+        if not login:
+            raise ValueError("Вы не ввели Login")
+
+        if not phone:
+            raise ValueError("Вы не ввели Phone number")
+
+        user = self.model(email=email, login=login, password=password, phone=phone)
+
         user.set_password(password)
-        # Сохраняем всё остальное
+
         user.save(using=self._db)
-        # Возвращаем пользователя
         return user
 
     # Делаем метод для создание обычного пользователя
-    def create_user(self, email, password):
+    def create_user(self, email, login, password, phone):
         # Возвращаем нового созданного пользователя
-        return self._create_user(email, password)
+        return self._create_user(email, login, password, phone)
 
-    def create_superuser(self, email, password):
-        user = self.create_user(email, password)
+    def create_superuser(self, email, login, password, phone):
+        user = self.create_user(email, login, password, phone)
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
@@ -41,23 +36,20 @@ class MyUserManager(BaseUserManager):
 
 # Создаём класс User
 class User(AbstractBaseUser, PermissionsMixin):
-    id = models.AutoField(primary_key=True, unique=True)  # Идентификатор
-    email = models.EmailField(max_length=100, unique=True, blank=False)  # Email
-    name = models.CharField(max_length=50, blank=True)
-    lastname = models.CharField(max_length=50, blank=True)
+    id = models.AutoField(primary_key=True, unique=True)
+    email = models.EmailField(max_length=50, unique=True, blank=False)
+    login = models.CharField(max_length=50, unique=True, blank=False)
     phoneNumberRegex = RegexValidator(regex=r"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$")
-    phone = models.CharField(validators=[phoneNumberRegex], max_length=11, unique=True, blank=False)
-    is_active = models.BooleanField(default=True)  # Статус активации
-    is_staff = models.BooleanField(default=False)  # Статус админа
+    phone = models.CharField(validators=[phoneNumberRegex], max_length=12, unique=True, blank=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'  # Идентификатор для обращения
+    USERNAME_FIELD = 'login'
 
+    objects = MyUserManager()
 
-    objects = MyUserManager()  # Добавляем методы класса MyUserManager
-
-    # Метод для отображения в админ панели
     def __str__(self):
-        return self.email
+        return self.login
 
 
 class AuthtokenToken(models.Model):
