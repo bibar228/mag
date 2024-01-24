@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from trans.models import Bill
-from users.models import User
 from trans.serializers import TransactionsSerializer, BillSerializer
 
 

@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from bizz.views import ProductsViewSet
 from trans.views import BillCreateView, TransactionsView
 from users.views import base, LoginView, RegistrUserView
 
@@ -26,5 +27,6 @@ urlpatterns = [
     path('auth/registr/', RegistrUserView.as_view(), name='registr'),
     path("auth/log/", LoginView.as_view()),
     path("createbill/", BillCreateView.as_view()),
-    path("payment/webhook/", TransactionsView.as_view())
+    path("payment/webhook/", TransactionsView.as_view()),
+    path("goods/", ProductsViewSet.as_view({'get': 'list'}))
 ]
