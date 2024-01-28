@@ -47,9 +47,36 @@ class LoginSerializer(serializers.Serializer):
         fields = ['login', 'password']
 
     def validate(self, attrs):
+        """Проверка на существование юзера в базе"""
+        try:
+            user_ex = User.objects.get(login=attrs["login"])
+        except:
+            return "ERROR"
+
+        """Проверка на правильность логина и пароля, подтверждение юзера"""
         user = authenticate(login=attrs['login'], password=attrs['password'])
-        if not user:
+
+        if not user and not user_ex:
             raise serializers.ValidationError({"resultCode": 1, "message": 'Incorrect login or password.'})
-        if not user.is_active:
+
+        if not user_ex.is_active:
             raise serializers.ValidationError({"resultCode": 1, "message": "User is disabled."})
+
         return {'user': user, "password": attrs['password']}
+
+class RegConfirmRepeatSerializer(serializers.Serializer):
+    email = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def validate(self, *args, **kwargs):
+        """Проверка на существование юзера в базе"""
+        try:
+            user = User.objects.get(email=self.validated_data["email"])
+            print(user)
+        except:
+            return "ERROR"
+
+        return user

@@ -19,7 +19,7 @@ from django.urls import path
 
 from bizz.views import ProductsViewSet
 from trans.views import BillCreateView, TransactionsView
-from users.views import base, LoginView, RegistrUserView
+from users.views import base, LoginView, RegistrUserView, register_confirm, RegConfirmRepeat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,5 +28,7 @@ urlpatterns = [
     path("auth/log/", LoginView.as_view()),
     path("createbill/", BillCreateView.as_view()),
     path("payment/webhook/", TransactionsView.as_view()),
-    path("goods/", ProductsViewSet.as_view({'get': 'list'}))
+    path("goods/", ProductsViewSet.as_view({'get': 'list'})),
+    path("register_confirm/<token>/", register_confirm, name="register_confirm"),
+    path("confirm_repeat/", RegConfirmRepeat.as_view())
 ]

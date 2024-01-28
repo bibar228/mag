@@ -134,8 +134,19 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'profik0083@gmail.com'
-EMAIL_HOST_PASSWORD = 'prometium4444'
-EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'sushentsevmacsim@yandex.ru'
+EMAIL_HOST_PASSWORD = 'shhdxqargxhicruq'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}
+
+SOAQAZ_USER_CONFIRMATION_KEY = "user_confirmation_{token}"
+SOAQAZ_USER_CONFIRMATION_TIMEOUT = 300

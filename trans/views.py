@@ -27,7 +27,7 @@ class TransactionsView(APIView):
 
         if sv[0] == "USER DONT HAVE THIS BILL, ERROR":
             return Response({"resultCode": [1], "message": ["USER DONT HAVE THIS BILL, ERROR"]})
-        print(sv[0])
+
         count = sv[0].amount + Bill.objects.filter(id=sv[1])[0].balance
         Bill.objects.filter(id=sv[1]).update(balance=count)
         return Response({"resultCode": [0], "message": ["Transaction was successful"], "user": {str(sv[0].user)}})
